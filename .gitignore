@@ -1,0 +1,7 @@
+.vagrant
+.idea
+node_modules
+builds/*
+repository/*
+logs/*
+shared/*
