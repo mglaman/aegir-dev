@@ -21,6 +21,15 @@ used for.
 There is some general installation steps. We required Drush Vagrant
 and Aegir Up. Just do "sh tools/install.sh" from the root directory to get setup.
 
+### Use dnsmasq
+
+Highly recommend using dnsmasq for local wildcard subdomains.
+
+Add to dnsmasq.conf
+````
+address=/contrib.dev/10.22.22.0
+````
+
 ## Creating environments
 
 @todo: Create some fancy scripts to help setup Panopoly, Commerce Kickstart, etc.
