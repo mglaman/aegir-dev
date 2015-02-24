@@ -1,9 +1,15 @@
+unless Vagrant.has_plugin?("vagrant-bindfs")
+  raise 'vagrant-bindfs is not installed - run "vagrant plugin install vagrant-bindfs"'
+end
+
 require 'yaml'
 
 dir = File.dirname(File.expand_path(__FILE__))
 
-configValues = YAML.load_file("config.yml")
+configValues = YAML.load_file("#{dir}/config.yml")
 data         = configValues['vagrantfile']
+
+Vagrant.require_version '>= 1.7.0'
 
 Vagrant.configure("2") do |config|
 
@@ -34,9 +40,8 @@ Vagrant.configure("2") do |config|
   # config.ssh.forward_agent = true
 
   data['vm']['shared_dirs'].each do |i, folder|
-    # Ubuntu doesn't like changing file permissions. Seems fine on Mac
-    # config.vm.synced_folder "#{folder['source']}", "#{folder['target']}", id: "#{i}", type: 'nfs'
-    config.vm.synced_folder "#{folder['source']}", "#{folder['target']}", id: "#{i}", group: "www-data", owner: "aegir", mount_options: ['dmode=775', 'fmode=764']
+    config.vm.synced_folder "#{folder['source']}", "/home/vagrant/#{folder['source']}", id: "#{i}", type: "nfs"
+    config.bindfs.bind_folder "/home/vagrant/#{folder['source']}", "#{folder['target']}", user: "aegir", group: "aegir"
   end
 
   ENV['VAGRANT_DEFAULT_PROVIDER'] = 'virtualbox'

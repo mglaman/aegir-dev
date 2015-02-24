@@ -1,10 +1,8 @@
 #!/bin/sh
 
-###################################################
-#
+#-------------------------------------------------------------------------------
 # Prepares the development workspace.
-#
-###################################################
+#-------------------------------------------------------------------------------
 
 set -e
 
@@ -12,6 +10,9 @@ set -e
 cd ${0%/*}
 ROOT=$(dirname $(pwd))
 cd ${ROOT}
+
+# Install vagrant-bindfs for proper NFS user:group mounts.
+vagrant plugin install vagrant-bindfs
 
 cd $HOME/.drush/
 # Download require Drush modules
@@ -23,8 +24,6 @@ if [ ! -d "aegir-up" ]; then
     echo "Cloning aegir-up"
     git clone --branch 7.x-2.x http://git.drupal.org/project/aegir-up.git
 fi
-cd ${ROOT
+cd ${ROOT}
 
-drush cc drush
-
-drush @contrib.project vg up
+drush cc drush && drush @contrib.project vg up
