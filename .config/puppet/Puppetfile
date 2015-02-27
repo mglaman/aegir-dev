@@ -1,0 +1,8 @@
+forge "http://forge.puppetlabs.com"
+mod 'aegir', :git => 'http://git.drupal.org/project/puppet-aegir.git'
+mod 'apt', :git => 'https://github.com/puppetlabs/puppetlabs-apt.git'
+mod 'composer', :git => 'https://github.com/tPl0ch/puppet-composer.git', :ref => 1.2.1
+# Puppet Drush is dated and modified within repo.
+# mod 'drush', :git => 'http://git.drupal.org/project/puppet_drush.git'
+mod 'git', :git => 'https://github.com/puppetlabs/puppetlabs-git.git'
+mod 'stdlib', :git => 'https://github.com/puppetlabs/puppetlabs-stdlib.git'
