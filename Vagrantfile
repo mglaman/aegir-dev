@@ -34,8 +34,13 @@ Vagrant.configure("2") do |config|
   # config.ssh.forward_agent = true
 
   data['vm']['shared_dirs'].each do |i, folder|
-    config.vm.synced_folder "#{folder['source']}", "#{folder['target']}", id: "#{i}", owner: 998, group: 999, mount_options: ['dmode=775', 'fmode=764']
-    # group: "www-data", owner: "aegir"
+    config.vm.synced_folder "#{folder['source']}", "#{folder['target']}", id: "#{i}",
+      mount_options: [
+        "dmode=775",
+        "fmode=664",
+        "uid=#{data['vm']['aegir_user']['uid']}",
+        "gid=#{data['vm']['aegir_user']['gid']}"
+      ]
   end
 
   config.vm.usable_port_range = (10200..10500)
@@ -52,23 +57,19 @@ Vagrant.configure("2") do |config|
     end
   end
 
-  #config.vm.provision :shell, :path => "#{dir}/.config/scripts/upgrade-puppet.sh"
-
   config.vm.provision :puppet do |puppet|
     puppet.facter = {
       'ssh_username'     => "vagrant",
       'provisioner_type' => ENV['VAGRANT_DEFAULT_PROVIDER'],
-      'vm_target_key'    => 'vagrantfile-local',
-      'fqdn'             => 'aegir.dev',
+      'vm_target_key'    => "vagrantfile-local",
+      'fqdn'             => "#{data['vm']['hostname']}",
     }
     puppet.manifests_path = "#{dir}/.config/puppet/"
     puppet.manifest_file  = "site.pp"
     puppet.module_path    = [
-      # File.expand_path('~/.drush/drush-vagrant/lib/puppet-modules/'),
-      # File.expand_path('~/.drush/aegir-up/lib/puppet-modules/'),
-      File.expand_path('.config/puppet/modules'),
+      File.expand_path(".config/puppet/modules"),
     ]
   end
 
-  config.vm.provision :shell, :path => '.config/scripts/startup.sh'
+  config.vm.provision :shell, :path => ".config/scripts/startup.sh"
 end

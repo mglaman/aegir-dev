@@ -15,6 +15,9 @@ vagrantfile:
     hostname: 'aegir.dev'
     short_name: 'contrib'
     long_name: 'Contrib Aegir Dev Env'
+    aegir_user:
+      uid: '998'
+      gid: '999'
     shared_dirs:
       sources:
         source: sources
@@ -28,3 +31,13 @@ vagrantfile:
       logs:
         source: logs
         target: /var/aegir/logs
+aegir:
+  hostmaster:
+    url: http://git.drupal.org/project/hostmaster.git
+    ref: 7.x-3.x
+  provision:
+    url: http://git.drupal.org/project/provision.git
+    ref: 7.x-3.x
+  makefile:
+  web_server: apache2
+  platform_path: /var/aegir/hostmaster

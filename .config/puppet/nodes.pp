@@ -1,4 +1,11 @@
 node "aegir.dev" {
+  if $yaml == undef {
+    $yaml = loadyaml('/vagrant/config.yml')
+  }
+  if $aegir_vars == undef {
+    $aegir_vars = $yaml['aegir']
+  }
+
   include apt
   include git
   include composer
@@ -9,24 +16,24 @@ node "aegir.dev" {
   }
 
   class { 'aegir::dev' :
-    hostmaster_ref  => '7.x-3.x',
-    provision_ref   => '7.x-3.x',
-    #hostmaster_repo => 'http://git.drupal.org/project/hostmaster.git',
-    #provision_repo  => 'http://git.drupal.org/project/provision.git',
+    hostmaster_ref  => $aegir_vars['hostmaster']['ref'],
+    provision_ref   => $aegir_vars['provision']['ref'],
+    hostmaster_repo => $aegir_vars['hostmaster']['url'],
+    provision_repo  => $aegir_vars['provision']['url'],
     #frontend_url    => 'aegir.local',
     #db_host         => 'localhost',
     #db_user         => 'root',
     #db_password     => 'pwd',
     #admin_email     => 'test@ergonlogic.com',
     #admin_name      => 'aegir_admin',
-    #makefile        => '/vagrant/makefiles/aegir-dev.make',
+    makefile         => $aegir_vars['makefile'],
     #aegir_user      => 'aegir',
     #aegir_root      => '/var/aegir',
     #web_group       => 'www-data',
     #db_server       => 'mysql',
-    #web_server      => 'nginx',
+    web_server      => $aegir_vars['web_server'],
     #update          => true,
-    platform_path   => '/var/aegir/hostmaster',
+    platform_path   => $aegir_vars['platform_path'],
     require => Class['drush::git::drush'],
   }
 
