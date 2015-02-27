@@ -1,4 +1,12 @@
-node "contrib.dev" {
+node "aegir.dev" {
+  include apt
+  include git
+  include composer
+
+  # Install drush
+  class { 'drush::git::drush' :
+    git_branch => '7.0.0-alpha8',
+  }
 
   class { 'aegir::dev' :
     hostmaster_ref  => '7.x-3.x',
@@ -18,14 +26,22 @@ node "contrib.dev" {
     #db_server       => 'mysql',
     #web_server      => 'nginx',
     #update          => true,
-    platform_path   => '/var/aegir/hostmaster-7.x-3.x',
+    platform_path   => '/var/aegir/hostmaster',
+    require => Class['drush::git::drush'],
   }
 
-  include drush_vagrant::users
-  drush_vagrant::user { 'aegir':
-    home_dir => '/var/aegir',
+  # Define root.
+  fimafeng::user { 'root':
+    home => '/root',
+  }
+
+  fimafeng::user { 'aegir':
+    home => '/var/aegir',
     require  => Class['aegir::dev'],
-    notify   => [ Exec['chsh aegir -s /bin/bash'], Exec['/usr/sbin/adduser aegir vagrant'] ],
+    notify   => [
+      Exec['chsh aegir -s /bin/bash'],
+      Exec['/usr/sbin/adduser aegir vagrant'],
+    ],
   }
   exec { 'chsh aegir -s /bin/bash':
     refreshonly => true,
@@ -42,11 +58,11 @@ node "contrib.dev" {
     require => Class['aegir::dev']
   }
 
-  class { 'aegir_config':
+  class { 'fimafeng::config':
     require => Class['aegir::dev']
   }
 
-  class { 'aegir_logs':
+  class { 'fimafeng::logs':
     require => Class['aegir::dev']
   }
 

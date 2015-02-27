@@ -12,20 +12,16 @@ vagrantfile:
         rGZvl2wILi9e:
           host: '7668'
           guest: '22'
-    hostname: 'contrib.dev'
+    hostname: 'aegir.dev'
     short_name: 'contrib'
     long_name: 'Contrib Aegir Dev Env'
     shared_dirs:
-      # Allows you to symlink from /var/aegir/shared_platforms/profiles
-      environments:
-        source: repository
-        target: /var/aegir/repository
+      sources:
+        source: sources
+        target: /var/aegir/sources
       builds:
         source: builds
         target: /var/aegir/shared_platforms
-      shared:
-        source: shared
-        target: /home/vagrant/shared
       exports:
         source: exports
         target: /var/aegir/migrations

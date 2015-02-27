@@ -1,7 +1,5 @@
 class curl {
 
-  notice("Installing curl and php5-curl")
-
   if ! defined(Package['curl']) {
     package { 'curl':
       ensure => 'installed',

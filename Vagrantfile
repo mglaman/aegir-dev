@@ -1,15 +1,9 @@
-unless Vagrant.has_plugin?("vagrant-bindfs")
-  raise 'vagrant-bindfs is not installed - run "vagrant plugin install vagrant-bindfs"'
-end
-
 require 'yaml'
 
 dir = File.dirname(File.expand_path(__FILE__))
 
 configValues = YAML.load_file("#{dir}/config.yml")
 data         = configValues['vagrantfile']
-
-Vagrant.require_version '>= 1.7.0'
 
 Vagrant.configure("2") do |config|
 
@@ -40,9 +34,11 @@ Vagrant.configure("2") do |config|
   # config.ssh.forward_agent = true
 
   data['vm']['shared_dirs'].each do |i, folder|
-    config.vm.synced_folder "#{folder['source']}", "/home/vagrant/#{folder['source']}", id: "#{i}", type: "nfs"
-    config.bindfs.bind_folder "/home/vagrant/#{folder['source']}", "#{folder['target']}", user: "aegir", group: "aegir"
+    config.vm.synced_folder "#{folder['source']}", "#{folder['target']}", id: "#{i}", owner: 998, group: 999, mount_options: ['dmode=775', 'fmode=764']
+    # group: "www-data", owner: "aegir"
   end
+
+  config.vm.usable_port_range = (10200..10500)
 
   ENV['VAGRANT_DEFAULT_PROVIDER'] = 'virtualbox'
 
@@ -56,19 +52,23 @@ Vagrant.configure("2") do |config|
     end
   end
 
+  #config.vm.provision :shell, :path => "#{dir}/.config/scripts/upgrade-puppet.sh"
+
   config.vm.provision :puppet do |puppet|
     puppet.facter = {
       'ssh_username'     => "vagrant",
       'provisioner_type' => ENV['VAGRANT_DEFAULT_PROVIDER'],
       'vm_target_key'    => 'vagrantfile-local',
-      'fqdn'             => 'contrib.dev',
+      'fqdn'             => 'aegir.dev',
     }
-    puppet.manifests_path = ".config/puppet/"
+    puppet.manifests_path = "#{dir}/.config/puppet/"
     puppet.manifest_file  = "site.pp"
     puppet.module_path    = [
-      File.expand_path('~/.drush/drush-vagrant/lib/puppet-modules/'),
-      File.expand_path('~/.drush/aegir-up/lib/puppet-modules/'),
+      # File.expand_path('~/.drush/drush-vagrant/lib/puppet-modules/'),
+      # File.expand_path('~/.drush/aegir-up/lib/puppet-modules/'),
       File.expand_path('.config/puppet/modules'),
     ]
   end
+
+  config.vm.provision :shell, :path => '.config/scripts/startup.sh'
 end

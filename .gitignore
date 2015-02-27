@@ -1,7 +1,6 @@
+*~
 .vagrant
 .idea
-node_modules
 builds/*
-repository/*
+sources/*
 logs/*
-shared/*
