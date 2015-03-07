@@ -67,7 +67,7 @@ Vagrant.configure("2") do |config|
     puppet.manifests_path = "#{dir}/.config/puppet/"
     puppet.manifest_file  = "site.pp"
     puppet.module_path    = [
-      File.expand_path(".config/puppet/modules"),
+      File.expand_path("#{dir}/.config/puppet/modules"),
     ]
   end
 
