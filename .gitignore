@@ -4,3 +4,6 @@
 builds/*
 sources/*
 logs/*
+aegir-dev/modules/*
+aegir-dev/themes/*
+aegir-dev/drush/*
