@@ -9,7 +9,7 @@ Here is an overview of the various folders and what they are used for.
 
 * **builds** Platforms for Aegir to import.
 * **logs** Apache will write each site's logs here.
-* **sources** Can be custom profiles or distributions. This is symlinked to /var/aegir/repository. Allows you to symlink these are profiles for builds.
+* **sources** Can be custom profiles or distributions. This is symlinked to /var/aegir/shared_platforms. Allows you to symlink these are profiles for builds.
 
 
 
@@ -23,7 +23,7 @@ Highly recommend using dnsmasq for local wildcard subdomains.
 
 Add to dnsmasq.conf
 ````
-address=/aegir.dev/10.22.22.0
+address=/.aegir.dev/10.22.22.10
 ````
 
 ## Creating environments
